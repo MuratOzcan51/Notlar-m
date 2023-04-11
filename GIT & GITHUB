@@ -1,0 +1,98 @@
+**********************************************************************************************************************************************
+
+GİT: Git, dağıtık bir versiyon kontrol sistemidir. Yazılım geliştirme süreçlerinde, birden fazla kişi tarafından aynı proje üzerinde çalışılırken, her birinin yaptığı değişikliklerin kaydedilmesi, yönetilmesi ve takibi için kullanılır. Bir oyun oynuyorsun öldüğünde başa dönmezsin kaydedersin devam edersin. Bunun gibi
+
+** Git bash dediketen sonra
+
+- ls: hangi klasördeysen onun dosyalarını gösterir
+- pwd: dizini gösterir
+- cd Dosyalar: dosyalar klasörüne girdi (cd: change directory)
+- cd .. : önceki klasöre geri gel
+- clear: ekranı temizlercd
+- mkdir (dosya adı): klasör oluşturur
+- touch not.txt: dosya oluşturdu
+- rm (dosya adı): dosya siler
+- git: bilgiler gelir
+-ls -la: gizli dosyaları da gösterir
+
+- Commit: versiyonu kaydetme olayıi
+- Brach: proje dallara ayırma olayı. Bir projeyi birlikte yapıyorsanız yeni branch oluşturur. Tek de olur
+- git status: git durumu hata varsa git le alakası yok demektir
+- git init: dosya git ile bağlandı. Artık repomıuz (eğer git ile bağlıysa bir daha yapma)
+- rm - rf .git: yanlışlıkla git eklediysen silebilirsin
+
+- git add: Yeni dosya ekledin bu dosyayı ekliceksin bunu git add (dosya adı) yazıp git status yaz. Eklenecek dosyaları gösterir
+- git add . : bütün dosyaları ekler
+- git commit -m "mesaj": dosyaları ekler ve mesaj ekler 
+- git log: bir hash atıyor kod veriyor ilerde işlem yapacaksan kod işe yarar
+
+** dosya değişti ya da eklendi, git status kontrol et sonra git add . yap ekle sonra commit işlemi yap. git commit -m "mesajın" sonra git log
+
+** bir sürü dosya var hepsini eklemeyeceksin bazı dosyalar gizli git add . mantıksız tek tek yazmak amelelik touch .gitignore dosyası oluştur içine eklemek istemediğin dosyanın adını yaz
+
+ HEAD : git de nerede olduğunuzu gösterir branch açtıkca değişir. 
+ - git branch (feat - adı): branch açar
+ - git branch: hangi feature da olduğunu gösterir yeşil olan
+ - git switch (feat - geçmek istediğin branch adı) branch değiştirir
+ - git merge (feat - birleşecek branch): branch birleştirir
+ 
+ ** Conflict çakışma: 2 branch açtın aynı dosyalar var birinde farklı birinde farklı birleştirme yaparken çakışma olur. Bunun için birleştırınce çakışan dosyayı kendine göre düzenle kaydet git add . ve commit et
+fast forward: birinde ilerletip master sabit kalırsa en son birleştirirsek buna fast forward denir
+
+** 2 branch var birinde çalışırken commit etmeden diğerine geçtin sonra tekrar döndüğünde silinir bunun saklnması için:
+- git stash: commit yapmadan bilgiyi saklar geri dönüp eklediğinde
+- git stash pop: sakladığın bilgiyi geri yükler
+- git restore (dosya adı): önceki commit haline döner
+- git checkout (git logdaki kod): istediğin commit haline döner. Head oraya döner ama master son halinde kalır. Bunun için yeni branch aç ordan devam et. istersen mastera dönip devam edebilirsin
+
+** Meslesa 6 commit yaptın 4 e döneceksin
+- git reset (log kodu): değişiklik kalır o commite dönersin
+- git reset --hard (kod): klasör içindeki değişiklikler de silinir
+tamamen gider ve o commite dönersin
+- git revert (kod): commiti geri dönderir. Böylece head üzerinden devam ediyosun yeni branch değil. Log üzerinden devam ediyorsun
+-git diff: son committen şimdiye kadar ne değişiklikler ypmışın gösterir
+- git diff HEAD: head üxerinde ne değişiklik yaptın
+- git diff (log kod log kod): 2 kod arasındaki yani 2 commit arasındaki farkları gösterir
+- git diff (branch adı branch adı): 2 branch arsı değişiklikler
+
+** yeni bir branch açtın ve sürekli master ile birleştriyorsun kendi branch ında devam ediyorsun. Sürekli birleştirince log geçmişi artar bunun için rebase kullanılır.
+- git rebase master: log temizler sıraya dizer
+
+********************************* GITHUB *****************************
+
+** Github sayfasına gir yeni repo oluştur işlemleri yap oluşturunca sana link vericek sonra git aç 
+- git remote add origin (link)
+- git push -u origin main (masterda olabilir branch adı önemli): dosyalar repoya eklendi
+- sonraki işlemlerde direk "git push" diyebilirsin
+
+** tabi öncesinde dosya yüklemeye hazır olmalı git init add commit .....vs
+
+** yeni branch oluşturdun işlemler yaptın git remote yaparak origin mi değil mi kontrol et ardından
+- git push origin feat: origini feat branch ı olana push et
+
+** githubda 2 farklı branch oluşacak sana uyarı verebilir birleştir diye eğer sıkıntı yoksa birleştirebilirsin fakat git de log a baktığında hala eski kayıtlar (2 branch) görünecek seknron etmen lazım
+- git fetch origin master: github daki değişiklikleri aktarır
+-git pull: fetch+merge
+
+** git fetch, uzak bir depodaki güncelleştirmeleri yerel depoya indirir, ancak yerel çalışma alanınızı değiştirmez. Bu işlem, çalışma alanınızda yapmış olduğunuz değişikliklerin uzak depodaki değişikliklerle karşılaştırılmasına yardımcı olmak için kullanılır.
+
+** git pull komutu ise, git fetch komutunu çalıştırarak uzak depodan değişiklikleri indirir ve bunları otomatik olarak yerel depo ve çalışma alanınıza entegre eder. Bu işlem, güncelleştirmeleri indirirken aynı zamanda yerel deponuzda da güncelleme yapmanıza olanak sağlar.
+
+*/* Özetle, git fetch komutu uzak depodan değişiklikleri indirir, ancak yerel depo ve çalışma alanınızı değiştirmez. git pull komutu ise hem uzak depodan değişiklikleri indirir hem de yerel depo ve çalışma alanınıza entegre eder.
+
+- git clone (github linki): repoyu indirir
+- git push origin master: committen sonra yaparsan dosyaları githuba aktarır
+
+forklarsan o projeyei alıp senin repoda devam eder
+
+***** git status, git init, git add . , git commit -m "",git branch, git push origin master
+
+** indirdin dosya değiştirdin ya da ekledin git push da hata verir çünkü iznin yok (repo senin değilse), git pull origin master yapınca orda değişiklik olunca git log ile bakabilirsin.
+
+
+*** BAŞKA HESABIN REPOSUNU GÜNCELLEMEK İÇİN:
+Önce fork diyip kendi hesabını seç senin repona gelsin. Kendi reponun clone ile indir ve değişiklikleri yap git push origin master ile kendi repona aktar. Sonra githubda bilgi verecek ör: orjinalden 1 commit ilerdesin diye sonra open pull request ardından mesajını yazıp creat pull request yap. Adama istek gitti gördüğünde senin değişikliği ekleyebilir
+
+** private repo açtın birinin görmesi için ayarlat collabarators add people kullanıcı adı yaz kabul ederse birlikte çalışırsınız. Ama 2 kişi aynı branch da çalışmak mantıklı olmayabilir yeni branch açıp orda ilerlemek daha mantıklı ardından yine pull req yaparak birleştirebilirsin
+
+*** Bir yazılım projesi yaptın ekleyeceksin. Terminali açtın cd ile dosya dizinine gittin. Git status ile kontrol et hata varsa git init ile git oluştur. Yine status ile değişiklikleri kontrol et. Ardından git add . sonra git commit ile yerel depoya kaydet

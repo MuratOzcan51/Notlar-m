@@ -1,0 +1,712 @@
+
+SQL Server Managment System programı
+
+Veri Tipler: 
+   bigint: tamsayılar
+   binary: 0 ve 1
+   bit: true false döndürür
+   char: sabit uzunluktaki değerler ör TC: char(11)  3 karakter girdin kalan 8 karakter boş girer
+   date: tarih yıl ay gün tutuyor
+   datetime: + saat dakika saniye var
+   float: ondalıklı değerler
+   nchar: sabit ama 2 kat yer tutuyor çince gibi diller için
+   int: integer
+   time: zaman kayıtları için
+   timestamp: mesela güncelleme oldu o saat aralığında neler güncellendiğini görmek için. (Güncel kayıtlar)
+   varchar(50): 50 uzunluğa kadar
+   
+ ** char ve varchar farkı: char belli uzunluk var ör 10 ise sen 2 girersen 8 boş. varcharda max uzunluk ör 10 girersen 2 girsen de olur
+ 
+--- CREATE DATABASE: Yeni bir veritabanı oluşturmak için kullanılır
+
+CREATE DATABASE veritabani_adı;
+
+ 
+--- CREATE TABLE: Yeni bir tablo oluşturmak için kullanılır
+ 
+ CREATE TABLE örnek_tablo (
+    id INT PRIMARY KEY,
+    ad VARCHAR(50),
+    yaş INT
+);
+
+
+--- ALTER TABLE: Mevcut bir tabloyu değiştirmek için kullanılır.
+
+ALTER TABLE örnek_tablo
+ADD COLUMN adres VARCHAR(100);
+
+
+ALTER TABLE örnek_tablo ADD COLUMN adres VARCHAR(100), telefon VARCHAR(20);   /birden fazla sütun ekler
+
+ALTER TABLE müşteriler DROP COLUMN telefon;   // bir sütunu siler
+
+
+--- DROP TABLE: Mevcut bir tabloyu silmek için kullanılır.
+
+DROP TABLE örnek_tablo;
+
+---- Tablodan sütun silme: ALTER TABLE örnek_tablo DROP COLUMN silinecek_sütun_adı;
+
+----"TRUNCATE" ifadesi, SQL'de bir tablodaki tüm verileri silmek için kullanılır: TRUNCATE TABLE örnek_tablo;
+** deleteden farkı deletede mesela id num var hepsini silince bir kayıt kaldı num 300 ama truncate de silince num 1 olur
+delete de yapı bozulmaz truncatede bozulur sıfırlanır
+
+
+--- SELECT: Verileri sorgulamak ve tablodan okumak için kullanılır. SELECT ifadesi, tablodaki belirli sütunları veya tüm tabloyu seçmek için kullanılabilir.
+
+
+SELECT * FROM örnek_tablo;      //tüm verileri seçer
+SELECT ogr,ogrnum FORM örnek_tablo;    //sadece ogr ve ogrnum sütunu
+
+--- INSERT: Verileri tabloya eklemek için kullanılır. INSERT INTO ifadesi, belirli sütunlara veya tüm sütunlara veri eklemek için kullanılabilir.
+
+
+INSERT INTO örnek_tablo (isim, soyisim, yaş) VALUES ('Ali', 'Yılmaz', 30);
+
+
+--- UPDATE: Verileri güncellemek için kullanılır. UPDATE ifadesi, belirli sütunlardaki verileri veya tüm sütunlardaki verileri güncellemek için kullanılabilir.
+
+UPDATE örnek_tablo SET yaş = 35 WHERE isim = 'Ali';  //yaşı 35 olarak güncelle
+
+
+--- DELETE: Verileri silmek için kullanılır. DELETE ifadesi, belirli sütunlardaki verileri veya tüm sütunlardaki verileri silmek için kullanılabilir.
+
+DELETE FROM örnek_tablo WHERE isim = 'Ali';
+
+
+--- WHERE, SQL sorgularında kullanılan bir anahtar kelimedir. WHERE ifadesi, belirli bir koşula uyan verileri seçmek için kullanılır
+
+SELECT * FROM müşteriler WHERE adres = 'İstanbul';   //adresi istanbul olanları seçer
+SELECT * FROM müşteriler WHERE sayfa<50 ;  
+
+Where koşulları and - or - ın ile bağlayabiliriz
+
+SELECT * FROM müşteriler WHERE adres = 'İstanbul' AND durum = 'aktif';
+SELECT * FROM müşteriler WHERE adres = 'İstanbul' OR durum = 'aktif';
+SELECT * FROM müşteriler WHERE adres IN ('İstanbul', 'Ankara');   //adresi istanbul ve ankarayı sağlayanlar
+
+
+--- LİKE:  SQL sorgularında belirli bir kalıba uygun olan verileri seçmek için kullanılan bir operatördür. Genellikle metin sütunları için kullanılır.
+
+SELECT * FROM müşteriler WHERE ad LIKE 'a%';    // a ile başlayan
+SELECT * FROM müşteriler WHERE ad LIKE '___';   // adı 3 karakter olanları
+SELECT * FROM müşteriler WHERE ad LIKE 'a% n';  // a ile başlayıp n ile biten
+
+SELECT * FROM müşteriler WHERE ad NOT LIKE 'a%';  // a ile başlamayan
+SELECT * FROM müşteriler WHERE ad LIKE '%a%';   // içinde a geçen
+SELECT * FROM müşteriler WHERE ad LIKE '[ab]%';    // a ya da b ile başlayan
+SELECT * FROM müşteriler WHERE ad LIKE 'a%b';    // a ile başlayan b ile biten
+SELECT * FROM müşteriler WHERE ad LIKE '[a-d]%';    // a ile d arasında olan ve başlayan
+SELECT * FROM müşteriler WHERE ad LIKE '_a%';   // 2. harfi a olan
+
+
+-- TOP : ilk kaçını gösterekce TOP 100 ilk 100 kaydı getir demek SELECT TOP 10 * FROM TABLE .....
+
+--- DISTINCT, SQL sorgularında kullanılan bir anahtar sözcüktür ve bir sorgudan benzersiz (tekrar edilmeyen) sonuçlar elde etmek için kullanılır.
+
+SELECT DISTINCT city FROM customers;  //müsteriler tablosundan tekrar eden şehirleri çıkarır
+
+--- ORDER BY, SQL sorgularında kullanılan bir anahtar sözcüktür ve sorgu sonuçlarını belirli bir sıraya göre sıralamak için kullanılır. ORDER BY ifadesi, bir sorgudan dönen sonuçların nasıl sıralanacağını belirtir.
+
+SELECT * FROM customers ORDER BY customer_name ASC;  //isimleri a dan z ye sıralar asc artan sıralama dsc dersen azalana göre
+
+Birden fazla sütunda sıralama yapmak için ilk yazdığın önceliklidir.
+
+SELECT * FROM customers ORDER BY age ASC, customer_name ASC;  //önce yaşları sonra isimleri sıralar
+
+
+--- AS (takma ad), SQL sorgularında sütun veya tablo adlarına alternatif adlar (alias) vermek için kullanılır. Bu alternatif adlar, sorgunun sonuçları okunurken daha anlamlı hale getirilmesini sağlar ve kodun daha okunaklı hale gelmesine yardımcı olur.
+
+SELECT kitapad as kitapisim from kitaplar // kitaplardan kitapadı sütunu kitapisim olarak getirir
+
+SELECT kitapad,kitapfiyat,kitapfiyat+2 as yeni fiyat from kitaplar  // 3 sütun yazar son sütun fiyata 2 lira ekler yeni fiyat olarak yazar
+
+SELECT* FROM kitaplar WHERE fiyat between 10 and 20  //fiyatı 10 ile 20 arasında olanları çeker
+
+--- DEFAULT: 
+
+ALTER TABLE customers
+ADD COLUMN sehir VARCHAR(10) DEFAULT 'niğde';   //tablo oluştururken de yapabilirsin
+
+
+--- CHECK: bir sütundaki verilerin belirli bir koşulu karşılaması gerektiğini belirtmek için kullanılır. Bu koşul, bir mantıksal ifade şeklinde ifade edilir ve sütundaki her yeni satırın bu koşulu karşılaması zorunludur.
+
+CREATE TABLE employees (
+  id INT PRIMARY KEY,
+  name VARCHAR(50),
+  age INT,
+  email VARCHAR(50),
+  CONSTRAINT check_age CHECK (age >= 18 AND age <= 65)  //eklerken bu koşulları sağlamıyorsa eklemez hata verir
+);
+
+ya da dire age INT check ...... diyebilirsin
+
+
+CREATE TABLE employees (
+  id INT PRIMARY KEY,
+  name VARCHAR(50),
+  age INT,
+  email VARCHAR(50),
+  CONSTRAINT check_name CHECK (name in ("murat"))  //adı murat değilse hata verir
+);
+
+** SELECT kitap1.ad, kitap2.fiyat FROM kitap1, kitap2  // kitap1 tablosunda ad 2 den fiyat çeker ** çaprazlama yapar !!!!!!
+
+SELECT 20+4 as "TOPLAM"  // toplam sütununa 24 yazar
+
+--- Toplama operatörü (+): 
+
+SELECT SUM(salary) AS total_salary
+FROM employees;
+
+
+--- Çıkarma operatörü (-):
+
+SELECT first_name, last_name, salary - 5000 AS salary_difference
+FROM employees;
+
+Bu sorgu, "employees" tablosundaki "first_name", "last_name" ve "salary" sütunlarını seçer ve "salary_difference" adında bir sütun oluşturur. "salary_difference" sütunu, her çalışanın maaşından 5000 TL çıkarıldıktan sonra elde edilen değerleri içerir.
+
+
+SELECT kitapad + "-" + kitapfiyat as kitaplık // iki satırı birleştirip - koydu ve adı kitaplık
+
+--- Çarpma operatörü (*):
+
+SELECT first_name, last_name, salary * 12 AS annual_salary
+FROM employees;
+
+
+*** FONKSİYONLAR:
+
+--- COUNT() fonksiyonu: Bir tablodaki satır sayısını sayar.
+
+SELECT COUNT(*) FROM employees;
+
+--- SUM() fonksiyonu: Bir tablodaki belirli bir sütundaki sayıların toplamını hesaplar.
+
+SELECT SUM(salary) FROM employees;
+
+--- AVG() fonksiyonu: Bir tablodaki belirli bir sütundaki sayıların ortalamasını hesaplar.
+
+SELECT AVG(age) FROM employees;
+
+--- MAX VE MİN
+
+SELECT MAX(salary) FROM employees;
+
+--- UPPER() - LOWER() fonksiyonu: Bir dizeyi büyük harflere ve küçük dönüştürür.
+
+SELECT UPPER(first_name) FROM employees;
+
+--- SUBSTRING() fonksiyonu: Bir dizeden belirli bir karakter alt dizisini seçer.
+
+SELECT SUBSTRING(first_name, 1, 3) FROM employees;  //firsnamesi en fazla 3 karakter olan
+
+--- DATE() fonksiyonu: Bir tarihin yalnızca tarih kısmını alır.
+
+SELECT DATE(hire_date) FROM employees;
+
+
+--- NOW() fonksiyonu: Geçerli tarihi ve saati verir.
+
+SELECT NOW() FROM employees;
+
+--- LEN() uzunluk
+
+SELECT LEN(isim) as "isim uzunluğu" FROM employees WHERE LEN(isim) >15 ;
+
+--- REPLACE() fonksiyonu: Bir dizedeki belirli bir karakteri veya karakterleri başka bir karakterle değiştirir.
+
+SELECT REPLACE(email, '@', '_at_') FROM employees;
+
+*** MATEMATİKSEL FONKSİYONLAR
+
+--- ABS() fonksiyonu: Bir sayının mutlak değerini verir.
+
+SELECT ABS(-10) FROM employees;
+
+SELECT ABS(fiyat) as "Fiyatlar" FROM kitaplar
+
+--- CEIL() fonksiyonu: Bir sayıyı bir üst tam sayıya yuvarlar.
+
+SELECT CEIL(salary) FROM employees;
+
+--- FLOOR() fonksiyonu: Bir sayıyı bir alt tam sayıya yuvarlar.
+
+--- RAND() fonksiyonu: 0 ile 1 arasında rasgele bir sayı verir.
+
+--- SIGN() fonksiyonu: Bir sayının işaretini döndürür (-1, 0 veya 1).
+
+SELECT SIGN(salary) FROM employees;
+
+--- SQRT() fonksiyonu: Bir sayının karekökünü hesaplar.
+
+SELECT SQRT(25) FROM employees;
+
+--- POW() fonksiyonu: Bir sayının üssünü hesaplar.
+
+SELECT POW(2, 3) FROM employees;
+
+--- MOD() fonksiyonu: İki sayının modülünü hesaplar.
+SELECT MOD(10, 3) FROM employees;
+
+--- SIN() fonksiyonu: Bir açının sinüsünü hesaplar.
+
+
+*** TARIH FONKSİYONLARI
+
+--- SYSDATE() fonksiyonu: Sistem saatini ve tarihini döndürür.
+
+SELECT SYSDATE() FROM employees;
+
+--- DATE() fonksiyonu: Bir tarih değeri oluşturur.
+
+SELECT DATE('2022-01-01') FROM employees;
+
+--- YEAR() fonksiyonu: Bir tarihin yılını döndürür.  //MONTH DAY HOUR SECOND gibi şeyler de var
+
+SELECT YEAR('2022-01-01') FROM employees;
+
+--- DATEPART fonksiyonu, belirtilen bir tarihteki belirli bir tarih bölümünü (yıl, ay, gün, saat, dakika vb.) döndürmek için kullanılır. SQL Server ve Azure SQL Database gibi bazı veritabanı yönetim sistemlerinde kullanılabilir.
+
+
+SELECT DATEPART(year, tarih_sutunu) FROM tablo_adi; //tarih_sutunundaki yılları alır
+
+--- DATEDIFF fonksiyonu, iki tarih arasındaki farkı belirli bir birimde hesaplar. Bu birim, yıl, ay, gün, saat, dakika veya saniye olabilir. Genel kullanım şekli şu şekildedir:
+
+SELECT DATEDIFF(year, '2022-01-01', '2025-02-01') AS DateDiff;  //sonuç 3
+
+--- DATEADD fonksiyonu ise belirli bir tarih veya saat değerine belirli bir zaman aralığı eklemek için kullanılır. Bu zaman aralığı yine yıl, ay, gün, saat, dakika veya saniye cinsinden olabilir. 
+
+UPDATE employees
+SET hire_date = DATEADD(year, 2, hire_date);  //hire_date değerlerine 2 yıl ekler
+
+--- GROUP BY, SQL'de verileri belirli bir sütuna göre gruplamak için kullanılan bir sorgu ifadesidir. Bu ifade, genellikle verilerin toplanması veya özetlenmesi gerektiğinde kullanılır.
+
+SELECT age, AVG(income)
+FROM customers        
+GROUP BY age;
+
+Bu sorgu, müşterileri yaşlarına göre gruplandırır ve her yaş grubu için ortalama geliri hesaplar. Sonuç, yaş grubu ve ortalama gelir sütunlarını içeren bir tablo olacaktır.
+
+SELECT customer_id, COUNT(*) AS num_orders
+FROM orders
+GROUP BY customer_id;
+
+bir "orders" tablosundaki her müşterinin kaç sipariş verdiğini bulmak için GROUP BY ve COUNT fonksiyonlarını kullanıyoruz:
+
+-- HAVING:gruplanmış veriler üzerinde bir koşul belirtirken mesela toplam maaş var maaşı 10000 den büyük olanları al derken
+
+SELECT satis_elemani_id, SUM(urun_fiyati) as toplam_satis
+FROM satislar
+GROUP BY satis_elemani_id
+HAVING SUM(urun_fiyati) > 1000;
+
+
+*** HAVING ifadesi, WHERE ifadesinden farklıdır çünkü WHERE ifadesi, verileri filtrelemek için kullanılırken, HAVING ifadesi, gruplandırılmış verileri filtrelemek için kullanılır.
+
+- Where kullanarak 2 tabloyu birleştirebilirsin
+
+SELECT *
+FROM customers, orders
+WHERE customers.customer_id = orders.customer_id
+AND customers.country = 'USA';
+
+
+-- INNER JOIN, SQL'de en sık kullanılan birleştirme türüdür. INNER JOIN, iki veya daha fazla tabloyu belirli bir sütuna göre birleştirerek, her iki tabloda da eşleşen kayıtları içeren bir sonuç seti oluşturur.
+
+SELECT *
+FROM table1                                      //2 küme düşün kesişimini alıyorsun
+INNER JOIN table2
+ON table1.column = table2.column;
+
+Bu örnekte, table1 ve table2 tabloları belirtilir ve ON ifadesi kullanarak bu iki tablo arasındaki ilişki tanımlanır. ON ifadesi, iki tablodaki sütunlarda eşleşen kayıtları seçmek için kullanılır.
+
+
+-- OUTER JOIN, SQL'de iki veya daha fazla tabloyu birleştirmek için kullanılan bir diğer birleştirme türüdür. OUTER JOIN, INNER JOIN'dan farklı olarak, eşleşen kayıtların yanı sıra, her iki tabloda eşleşmeyen kayıtları da içeren bir sonuç seti oluşturur.
+
+LEFT OUTER JOIN: İlk tablodaki tüm kayıtları ve eşleşen kayıtları ikinci tablodan alır.
+
+RIGHT OUTER JOIN: İkinci tablodaki tüm kayıtları ve eşleşen kayıtları birinci tablodan alır.
+
+FULL OUTER JOIN: İki tablodaki tüm kayıtları ve eşleşen kayıtları alır.
+
+SELECT *
+FROM table1
+LEFT/RIGHT/FULL OUTER JOIN table2
+ON table1.column = table2.column;
+
+** Örneğin left outer da ilk tabloda olan 2. de yoksa ilk tablodaki herşeyi yazar 2. tabloda olmayanları null dönderir
+
+-- INTERSECT ifadesi, iki veya daha fazla SELECT ifadesi sonucu oluşan sonuç kümeleri arasında ortak olan satırları döndürür. 
+
+SELECT employee_name
+FROM employees
+INTERSECT                       // 2 tablodada aynı adda olanları dönderir
+SELECT employee_name
+FROM managers;
+
+-- EXCEPT ifadesi, ilk SELECT ifadesinin sonucunda elde edilen sonuç kümesinden, diğer SELECT ifadesinin sonucunda elde edilen sonuç kümesinde yer alan satırları çıkarır.
+
+SELECT employee_name
+FROM employees
+EXCEPT                          // employees de olup managers de olmayan isimler a fark b gibi
+SELECT employee_name
+FROM managers;
+
+-- UNION ve UNION ALL SQL'de iki veya daha fazla SELECT ifadesi sonucunda elde edilen sonuç kümelerini birleştiren operatörlerdir. Ancak, bu operatörler arasında önemli farklar vardır.
+
+SELECT column1, column2, ...
+FROM table1
+UNION                                       // tekrar edenleri siler 1 kere yazar
+SELECT column1, column2, ...
+FROM table2;
+
+
+SELECT column1, column2, ...
+FROM table1
+UNION ALL                                  // bütün kayıtlar
+SELECT column1, column2, ...
+FROM table2;
+
+Bu örneklerde, table1 ve table2 tablolarından SELECT ifadeleri sonucu elde edilen sonuç kümeleri birleştirilir. UNION operatörü kullanılırken, tekrar eden satırlar çıkartılırken, UNION ALL operatörü kullanılırken, tüm satırlar korunur.
+
+-- Transaction (işlem), bir veya daha fazla SQL sorgusunun bir arada çalıştırıldığı ve tüm sorguların ya tamamının ya da hiçbirinin işlem edilmediği mantıksal bir işlemdir. İşlemler, veritabanında birden fazla sorgu çalıştırırken, tüm sorguların bir arada ve kesintisiz bir şekilde işlemesi gerektiğinde kullanılır. Böylece, veritabanında oluşabilecek hataların kontrolü sağlanabilir ve bir sorgunun başarısız olması durumunda tüm işlemin geri alınması mümkün olur.
+
+START TRANSACTION;
+
+UPDATE hesaplar SET bakiye = bakiye + 500 WHERE hesap_no = '123456';
+INSERT INTO hesap_hareketleri (hesap_no, islem_tarihi, tutar, aciklama) VALUES ('123456', NOW(), 500, 'Para yatırma');
+
+COMMIT;
+
+
+Bu sorguda, "hesaplar" tablosunda "123456" numaralı hesabın bakiyesi 500 TL artırılır ve aynı zamanda "hesap_hareketleri" tablosuna para yatırma işlemi kaydedilir. İşlem başarılı bir şekilde tamamlandıktan sonra COMMIT kullanılarak işlem onaylanır ve veriler veritabanına kalıcı olarak kaydedilir. Herhangi bir hata durumunda ROLLBACK kullanarak işlem geri alınabilir.
+
+-- DECLARE ifadesi, SQL'de bir değişken tanımlamak için kullanılan bir ifadedir. Değişkenler, bir sorguda kullanılan verileri geçici olarak saklamak için kullanılır.
+
+DECLARE @musteri_no INT = 12345;
+SELECT * FROM musteriler WHERE musteri_no = @musteri_no;
+
+Bu sorguda, "musteriler" tablosundan, @musteri_no değişkenine atanmış olan müşteri numarasına sahip müşteriler seçilir. Bu sorgu, değişkenler kullanılarak veriye dinamik olarak erişim sağlamak için kullanılabilir.
+
+-- PRINT ifadesi, SQL sorguları içinde bir mesaj yazdırmak için kullanılan bir ifadedir. Bu ifade, sorgu sonuçlarını etkilemez, ancak bir mesajı konsola yazdırabilir.
+
+DECLARE @musteri_no INT = 12345;
+PRINT 'Müşteri no: ' + CAST(@musteri_no AS VARCHAR(10));               // OUTPUT:  "Müşteri no: 12345"
+
+
+-- 4 İŞLEM: 
+
+DECLARE @sayi1 INT, @sayi2 INT;
+SET @sayi1 = 10;
+SET @sayi2 = 5;
+
+SELECT @sayi1 + @sayi2 AS 'Toplam';
+SELECT @sayi1 - @sayi2 AS 'Çıkarma';
+SELECT @sayi1 * @sayi2 AS 'Çarpma';
+SELECT @sayi1 / @sayi2 AS 'Bölme';
+
+Geçici tablo oluşturup onları mevcut tablodan çektiklerini ekleyebilirsin.
+
+declare @yeni table(
+renk varchar(20)...
+......
+......)
+delete from kitaplar //bu tablodan sil neleri
+output deleted.fiyat,deleted.sayfasayısı.......     //nereye aktar
+into @yeni
+where sayfasayısı=30 // sayısı 30 olanı silip aktar
+select * from @yeni //tabloyu yaz
+
+** yeni satır ekleyeceksen delete yerine insert ve inserted yaz where yerine values ("a",85,25) yaz örnek olarak
+
+--- IF - ELSE: IF...ELSE yapısı, belirli bir koşula göre farklı işlemlerin yapılmasına olanak tanır. IF...ELSE yapısı genellikle saklama prosedürleri ve tetikleyicilerde kullanılır.
+
+
+
+CREATE PROCEDURE update_employee_salary (@employee_id INT)
+AS
+BEGIN
+    DECLARE @current_salary INT;
+    DECLARE @new_salary INT;
+
+    SELECT @current_salary = salary FROM employees WHERE employee_id = @employee_id;
+
+    IF @current_salary < 5000
+        SET @new_salary = @current_salary * 1.1;
+    ELSE
+        SET @new_salary = @current_salary * 1.05;
+
+    UPDATE employees SET salary = @new_salary WHERE employee_id = @employee_id;
+END;
+
+
+Örneğin, yukaridaki saklama prosedürü, "employees" tablosundaki bir çalışanın maaşını artırmak için kullanılır. Eğer çalışanın mevcut maaşı 5000 TL'den az ise, maaşı %10 artırılır ve aksi halde maaşı %5 artırılır.
+
+** Ya da değişken oluştur 
+if (koşul)
+begin
+print 'sdffgndg' + cast(@sayi as varchar(1)) // cast tipi dönüştürür
+end
+else if (koşul)
+begin 
+print ................
+end
+else
+
+-- CAST fonksiyonu, verileri bir veri tipinden başka bir veri tipine dönüştürmek için kullanılır.
+
+CAST(ifade AS veri_tipi)
+
+SELECT CAST(yaş AS INT) FROM müşteriler; // Bu, yaş sütununu tamsayı veri tipine dönüştürecek ve sonucu döndürecektir.
+
+-- CASE yapısı
+
+SELECT 
+  CASE değişken
+    WHEN durum1 THEN değer1
+    WHEN durum2 THEN değer2
+    WHEN durum3 THEN değer3
+    ELSE varsayılan_değer
+  END
+FROM tablo;
+
+
+SELECT not
+  CASE 
+    WHEN not >= 90 THEN 'AA'
+    WHEN not >= 80 THEN 'BA'    // çıktıda notlar ve yanında harf notu sütunu olur
+    WHEN not >= 70 THEN 'BB'
+    WHEN not >= 60 THEN 'CB'
+    WHEN not >= 50 THEN 'CC'
+    ELSE 'FF'
+  END
+FROM ogrenciler;
+
+-- WHİLE
+
+DECLARE @i INT = 1; -- Başlangıç değeri belirlenir.
+
+WHILE @i <= 10 -- Koşul belirlenir.
+BEGIN
+  PRINT @i; -- Her tekrarda yapılacak işlem belirlenir.
+  SET @i = @i + 1; -- Değişken güncellenir.
+END;
+
+
+-- CONTINUE ifadesi, döngü yapıları içinde kullanılır ve o anki döngü tekrarının geri kalan kısmını atlar, bir sonraki tekrara geçer. SQL de de aynıdır
+
+-- WAITFOR ifadesi, bir sorgunun belirli bir süre boyunca beklemesini sağlamak için kullanılır. Bu ifade, belirli bir süre boyunca işlemin devam etmesini engelleyerek, örneğin bir sonraki adımın çalışmasını beklemesini sağlar.
+
+WAITFOR DELAY '00:00:05'   //sorgu 5 sn çalışmaz bekler
+
+-- PROCEDURE: Pythonda modül yazmak gibi örneğin bir koşullu sql yazdın PROCEDURE oluşturup daha sonra execute ettiğinde onu getirip kullanır. Ör sin() cos() gibi
+
+CREATE PROCEDURE ogrenci_listele 
+AS
+BEGIN
+  SET NOCOUNT ON;
+  
+  -- Tüm öğrenci kayıtlarını döndür
+  SELECT * FROM ogrenciler;
+END;
+
+
+execute ogrenci_listele   // sonradan çağırınca gelir listeler exec de olur
+
+--- ALTER PROCEDURE ifadesi, mevcut bir SQL Stored Procedure'ın tanımını değiştirmek için kullanılır.
+
+ALTER PROCEDURE ogrenci_listele 
+AS
+BEGIN
+  SET NOCOUNT ON;
+  
+  -- Tüm öğrenci kayıtlarını döndür
+  SELECT id, isim, notu * 2 as notu FROM ogrenciler;
+END;
+
+Bu sorgu, ogrenci_listele Stored Procedure'ının tanımını günceller ve notu sütunundaki her değeri 2 ile çarparak döndürür.
+
+--- DROP PROCEDURE: Siler
+
+-- SET NOCOUNT ON; yada OFF: on da satır sayısını getirmez off da getirir
+
+
+
+
+CREATE PROCEDURE toplam (@a int, @b int, @sonuc int output)  // 2 sayı alır ve çıktı verir
+as
+set @sonuc= @a+@b    //sorgumuz burada başlıyor
+print 'sonuc' + vast(@sonuc as varchar(3))
+
+exec toplam 5,9, @t output
+
+
+
+-- FONKSİYONLAR: 
+
+Yerleşik fonksiyonlar, SQL sunucusu tarafından sağlanan ve kullanılabilen önceden tanımlanmış fonksiyonlardır. Bazı yerleşik fonksiyonlar şunlardır:
+
+SUM(): Bir sayısal sütunun toplamını hesaplar
+AVG(): Bir sayısal sütunun ortalamasını hesaplar
+MAX(): Bir sütundaki en büyük değeri döndürür
+MIN(): Bir sütundaki en küçük değeri döndürür
+COUNT(): Bir sütundaki satır sayısını hesaplar
+
+Kullanıcı Tanımlı Fonksiyonlar:
+
+CREATE FUNCTION Carpma(@sayi1 INT, @sayi2 INT)
+RETURNS INT   //ne tipinde dönerek
+AS
+BEGIN
+    RETURN @sayi1 * @sayi2
+END
+
+
+SELECT Carpma(3, 4)
+
+
+CREATE FUNCTION ToUpperChar(@str CHAR(10))
+RETURNS CHAR(10)
+AS
+BEGIN
+    DECLARE @result CHAR(10)
+    SET @result = UPPER(@str)
+    RETURN @result
+END
+
+
+SELECT ToUpperChar('Merhaba')
+
+
+--- TRİGGER, belirli bir tablodaki belirli bir olayın gerçekleştiğinde otomatik olarak çalışan bir veritabanı nesnesidir. Trigger'lar, veritabanı işlemlerini otomatikleştirmek ve veritabanı bütünlüğünü korumak için kullanılırlar.
+
+** Procedure exec ile çağırılır trigger otomatik
+
+CREATE TRIGGER myAfterTrigger
+ON myTable
+AFTER INSERT, UPDATE, DELETE   // bu işlemlerden biri yapıldıkyan sonra
+AS
+BEGIN
+    PRINT 'AFTER Trigger executed'      // bu yazar
+END
+
+
+mesela
+
+insert into myTable values(5,865,48,2) // bunu yapınca tabloya ekler ve 'AFTER Trigger executed'  yazar
+
+
+CREATE TRIGGER myAfterTrigger
+ON myTable
+AFTER INSERT  
+AS
+BEGIN
+  SELECT a,sayı+8  from myTable
+  where sayı=20
+END
+
+örnekte tabloya ekleme işlemi yapıldıktan sonra sayı sütunu 20 olanlara 8 ekle demektir
+
+
+*** Aggregate functinon yani sum count max min gibi ifadeler where içinde değil having içinde kullanılır. sütun adı yazarken arada boşluk olmaz varsa [sdfds dfvfdv] şeklinde sql de yazarsın. Groupby ve orderby içinde birden fazla sütun kullanabilirsin. select içinde count(distinct name) dersen adı bir kez geçenleri alır. FROM TABLE T dersen where içinde T.İD şeklinde devam etmen lazım. SELECT ID AS NUMARA dersen ıd sütunu numara olarak yazar. Bu kısaltma işine alias deniyor. 
+
+*** Primary key, bir veritabanı tablosunda her bir satırın benzersiz bir şekilde tanımlanmasını sağlayan bir sütundur. Genellikle, bir tablodaki primary key, bir veya birden fazla sütunu birleştirerek oluşturulur. Primary key, tablodaki herhangi bir satıra benzersiz bir tanımlayıcı atar ve bu şekilde satırı diğer satırlardan ayırır.
+
+*** Foreign key ise, bir veritabanı tablosundaki sütunlar arasında bir ilişki kurarak, iki veya daha fazla tablonun birbirine bağlanmasını sağlayan bir sütundur. Foreign key, bir tablodaki bir sütunun değeri, başka bir tablodaki primary key'in değeriyle eşleştiğinde, bu tablolar arasında bir bağlantı kurar. Bu sayede, veritabanındaki farklı tablolardaki veriler arasında ilişki kurulması mümkün olur.
+
+*** Birden fazla tablodan veri çekerken sütunlarını belirtmek için select içinde nokta ile belirtmelisi
+
+SELECT table1.column_name1, table2.column_name2
+FROM table1, table2                                             // table1 t dersen select içinde de değiştirmen lazım
+WHERE table1.column_name = table2.column_name;
+
+
+
+*** BİRDEN FAZLA JOİN ON İŞLEMİ
+
+SELECT *
+FROM Customers
+JOIN Orders
+ON Customers.CustomerID = Orders.CustomerID
+JOIN OrderDetails
+ON Orders.OrderID = OrderDetails.OrderID;
+
+
+**** INNER JOIN: İkisinde de olan kayıtlar
+LEFT JOIN: 1. tablonun hepsi 2. tablodaki karşılığı. Eğer 2. tabloda karşılığı yoksa boş
+RIGHT JOIN: 2.tablonun hepsi 1. tablodaki karşılığı .......................
+FULL JOIN. İki tablo da yazılır karşılığı boşsa boş kalır ama yazılır
+
+*** Tarihe göre sıralama yaparsak. Groupby DATEPART(YEAR, DATE_ (kolonun adı)) tarih kolonunun yılını alır
+Orderby DATEPART(YEAR, DATE_ (kolonun adı))
+
+SELECT DATEPART(month, '2022-03-10')    // ayı çeker yani 3 yazar
+
+--- SUBQUERY
+
+SELECT *
+FROM employees
+WHERE salary = (SELECT MAX(salary) FROM departments)
+
+Bu örnekte, "employees" tablosundan, "departments" tablosunda bulunan en yüksek maaşı alan çalışanları seçiyoruz:
+
+INSERT INTO customers (name, email, country_id)
+VALUES ('John Smith', 'john.smith@example.com', (SELECT id FROM countries WHERE name = 'USA'))
+
+Bu sorgu, "countries" tablosunda "USA" adıyla eşleşen bir ülke bulur ve bu ülkenin "id" değerini "customers" tablosundaki yeni müşterinin "country_id" sütununa ekler.
+
+
+DELETE FROM customers
+WHERE id = 123 AND EXISTS (SELECT * FROM orders WHERE customer_id = customers.id)
+
+
+Örneğin, bir müşterinin silinmesi gerektiğini varsayalım. Ancak, müşteriye ait siparişlerin de silinmesi gerekiyor. Aşağıdaki örnekte, bir alt sorgu kullanarak "orders" tablosundan ilgili siparişleri silerek, müşteriyi "customers" tablosundan silebiliriz:
+
+
+SELECT name, email, (SELECT MAX(date) FROM orders WHERE customer_id = customers.id) AS last_order_date
+FROM customers
+WHERE id = 123
+
+Örneğin, bir müşterinin adını, e-posta adresini ve son sipariş tarihini görüntülemek istediğimizi varsayalım. Aşağıdaki örnekte, bir alt sorgu kullanarak "orders" tablosundan ilgili müşterinin son sipariş tarihini buluyoruz:
+
+SELECT categories.name, (SELECT COUNT(*) FROM products WHERE category_id = categories.id) AS
+
+
+Örneğin, bir ürün kategorisi ve kategoriye ait ürün sayısını görüntülemek istediğimizi varsayalım. Aşağıdaki örnekte, bir alt sorgu kullanarak "products" tablosundan her kategori için ürün sayısını buluyoruz:
+
+
+**** STRING FONKSİYONLARI
+
+SELECT ASCII('A') AS result;          //ASCII DEĞERI DÖNDERİR
+-- Çıktı: 65
+ 
+SELECT SUBSTRING('Hello World', 7, 5) AS result;     //1 den başlar 7 den itibaren 5 karakter al
+-- Çıktı: World
+
+SELECT CHARINDEX('World', 'Hello World') AS result;    //World kelimesi 6. indexten başlıyor
+-- Çıktı: 6
+
+
+SELECT CONCAT('Hello', 'World') AS result;
+-- Çıktı: HelloWorld
+
+SELECT FORMAT(12345.6789, 'C', 'en-US') AS result;
+-- Çıktı: $12,345.68
+
+SELECT TRIM('   Hello World   ') AS result;     // baş ve sonraki boşlukları kaldırır
+-- Çıktı: Hello World
+
+SELECT LEFT('Hello World', 5) AS result;
+-- Çıktı: Hello
+
+SELECT RIGHT('Hello World', 5) AS result;
+-- Çıktı: World
+
+SELECT LEN('Hello World') AS result;
+-- Çıktı: 11
+
+SELECT REPLICATE('*', 10) AS result;
+-- Çıktı: **********
